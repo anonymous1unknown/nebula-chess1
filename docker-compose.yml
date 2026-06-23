@@ -1,0 +1,47 @@
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: nebula
+      POSTGRES_PASSWORD: nebula
+      POSTGRES_DB: nebula
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+      - ./backend/migrations/0001_initial.sql:/docker-entrypoint-initdb.d/0001_initial.sql:ro
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+
+  backend:
+    build:
+      context: ./backend
+    environment:
+      DATABASE_URL: postgresql+asyncpg://nebula:nebula@db:5432/nebula
+      REDIS_URL: redis://redis:6379/0
+      JWT_SECRET: change-me-super-secret
+      ACCESS_TOKEN_EXPIRE_MINUTES: 30
+      REFRESH_TOKEN_EXPIRE_DAYS: 30
+      CORS_ORIGINS: http://localhost:5173,http://localhost:3000
+      STOCKFISH_PATH: /usr/games/stockfish
+    depends_on:
+      - db
+      - redis
+    ports:
+      - "8000:8000"
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        VITE_API_BASE_URL: http://localhost:8000
+    depends_on:
+      - backend
+    ports:
+      - "5173:80"
+
+volumes:
+  db_data:
