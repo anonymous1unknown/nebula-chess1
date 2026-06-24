@@ -11,3 +11,4 @@ passlib[bcrypt]
 redis
 python-dotenv
 chess
+greenlet==3.1.1
