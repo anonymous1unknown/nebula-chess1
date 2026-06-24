@@ -8,9 +8,9 @@ passlib[bcrypt]==1.7.4
 python-multipart==0.0.20
 pydantic==2.10.4
 pydantic-settings==2.7.0
+email-validator==2.2.0
 redis==5.2.1
 prometheus-client==0.21.1
-email-validator==2.2.0
 websockets==14.1
-chess==1.11.1
 python-dotenv==1.0.1
+chess==1.11.1
